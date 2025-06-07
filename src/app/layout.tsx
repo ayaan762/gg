@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Apology Hub | Make Things Right",
+  title: "Death Call",
   description: "A heartfelt way to apologize and make amends",
 };
 
