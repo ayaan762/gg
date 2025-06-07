@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Death Call",
-  description: "A heartfelt way to apologize and make amends",
+  description: "MAA CHUDI",
 };
 
 export default function RootLayout({
