@@ -243,7 +243,7 @@ export default function GrievanceApp() {
 
                     <div>
                       <label className="block mb-2 font-medium text-pink-600/90">
-                        Details (optional)
+                        Details (talk to me like im your girlie)
                       </label>
                       <Textarea
                         placeholder="Tell me more!!  how i messed up this time..."
@@ -286,7 +286,7 @@ export default function GrievanceApp() {
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          Submit Apology
+                          Letting that Bitch Know
                         </>
                       )}
                     </Button>
