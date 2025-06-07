@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import twilio from "twilio";
 
@@ -35,7 +34,7 @@ export async function POST(request: NextRequest) {
     const call = await client.calls.create({
       url: "http://demo.twilio.com/docs/voice.xml",
       to,
-      from: twilioPhoneNumber,
+      from: twilioPhoneNumber!,
     });
 
     return NextResponse.json({ 
@@ -48,7 +47,7 @@ export async function POST(request: NextRequest) {
     console.error("Twilio call error:", error);
     
     let errorMessage = "An unknown error occurred";
-    let statusCode = 500;
+    const statusCode = 500; // Changed let to const here
 
     if (error instanceof Error) {
       errorMessage = error.message;
