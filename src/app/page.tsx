@@ -20,7 +20,7 @@ const mistakeOptions = [
   "Missed your call 📞",
   "Cancelled plans 😔",
   "Sent a wrong text 📝",
-  "GUESS",
+  "GUESS BITCH",
 ];
 
 const springAnim = {
@@ -37,7 +37,7 @@ export default function GrievanceApp() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const selectedMistake = mistake === "GUESS" ? customMistake : mistake;
+  const selectedMistake = mistake === "GUESS BITCH" ? customMistake : mistake;
   const canSubmit = selectedMistake && fixes;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -145,7 +145,7 @@ export default function GrievanceApp() {
               transition={{ delay: 0.3 }}
             >
               <h1 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                MAAFI HEROINE AB KYA KARDIA MENE? 😳
+                MAAFI HEROINE AB KYA KARDIA MENE????
               </h1>
             </motion.div>
 
@@ -176,7 +176,7 @@ export default function GrievanceApp() {
                       Apology Has Been Asked For! 💌
                     </p>
                     <p className="text-pink-600">
-                      Your heartfelt message is on its way and has been recorded ❤️
+                      Your heartfelt message is on its way  ❤️
                     </p>
                   </div>
                   <Button
@@ -221,7 +221,7 @@ export default function GrievanceApp() {
                       </Select>
                     </div>
 
-                    {mistake === "GUESS" && (
+                    {mistake === "GUESS BITCH" && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -246,7 +246,7 @@ export default function GrievanceApp() {
                         Details (optional)
                       </label>
                       <Textarea
-                        placeholder="Tell me more about how i messed up this time..."
+                        placeholder="Tell me more!!  how i messed up this time..."
                         value={details}
                         onChange={(e) => setDetails(e.target.value)}
                         className="min-h-[100px] focus:ring-2 focus:ring-pink-200"
@@ -255,7 +255,7 @@ export default function GrievanceApp() {
 
                     <div>
                       <label className="block mb-2 font-medium text-pink-600/90">
-                        How can I make it right (Suggestions Please)
+                        Any ways i could make it right :(Any Suggestions?? Please??)
                       </label>
                       <Textarea
                         placeholder="Is there anyway i can fix this :("
