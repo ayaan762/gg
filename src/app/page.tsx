@@ -38,67 +38,78 @@ export default function GrievanceApp() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedMistake = mistake === "GUESS" ? customMistake : mistake;
-
   const canSubmit = selectedMistake && fixes;
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!canSubmit) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+    try {
+      // First store the submission in database
+      const dbResponse = await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mistake: selectedMistake,
+          details: details || null,
+          fixes,
+          createdAt: new Date()
+        }),
+      });
 
-    const res = await fetch("/api/call", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: "+916389455824",
-        message: `Hey! I'm really sorry for ${selectedMistake}. Here's how I'll make it right: ${fixes}`,
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    const result = await res.json();
-    console.log("Call API Result:", result);
-
-    if (!res.ok || result.success === false) {
-      throw new Error(result.message || "Call initiation failed");
-    }
-
-    // Track call status (optional)
-    const checkStatus = async (callSid: string) => {
-      try {
-        const statusRes = await fetch(`/api/call/status?callSid=${callSid}`);
-        const status = await statusRes.json();
-        console.log("Call status update:", status);
-      } catch (statusError) {
-        console.log("Status check failed:", statusError);
+      if (!dbResponse.ok) {
+        throw new Error("Failed to save your apology to our records");
       }
-    };
 
-    // First status check after 5 seconds
-    setTimeout(() => checkStatus(result.callSid), 5000);
-    
-    setSubmitted(true);
+      // Then make the phone call
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-  } catch (err) {
-    console.error("Call error:", err);
-    alert(
-      err instanceof Error 
-        ? err.message 
-        : "Call was initiated but we couldn't confirm completion. " +
-          "Please check if the recipient received it."
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      const callRes = await fetch("/api/call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: "+916389455824",
+          message: `Hey! I'm really sorry for ${selectedMistake}. Here's how I'll make it right: ${fixes}`,
+        }),
+        signal: controller.signal
+      });
 
+      clearTimeout(timeoutId);
+      const result = await callRes.json();
+
+      if (!callRes.ok || result.success === false) {
+        throw new Error(result.message || "Call initiation failed");
+      }
+
+      // Track call status (optional)
+      const checkStatus = async (callSid: string) => {
+        try {
+          const statusRes = await fetch(`/api/call/status?callSid=${callSid}`);
+          const status = await statusRes.json();
+          console.log("Call status update:", status);
+        } catch (statusError) {
+          console.log("Status check failed:", statusError);
+        }
+      };
+
+      setTimeout(() => checkStatus(result.callSid), 5000);
+      
+      setSubmitted(true);
+
+    } catch (err) {
+      console.error("Error:", err);
+      alert(
+        err instanceof Error 
+          ? err.message 
+          : "Something went wrong. Your apology might have been recorded but the call failed. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const resetForm = () => {
     setSubmitted(false);
@@ -110,10 +121,10 @@ export default function GrievanceApp() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-pink-50 flex items-center justify-center p-4 md:p-6">
-       <audio autoPlay loop className="hidden">
-      <source src="/background.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
+      <audio autoPlay loop className="hidden">
+        <source src="/background.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -165,7 +176,7 @@ export default function GrievanceApp() {
                       Apology Has Been Asked For! 💌
                     </p>
                     <p className="text-pink-600">
-                      Your heartfelt message is on its way ❤️
+                      Your heartfelt message is on its way and has been recorded ❤️
                     </p>
                   </div>
                   <Button
@@ -244,7 +255,7 @@ export default function GrievanceApp() {
 
                     <div>
                       <label className="block mb-2 font-medium text-pink-600/90">
-                        {"How can I make it right (Suggestions Please"}
+                        How can I make it right (Suggestions Please)
                       </label>
                       <Textarea
                         placeholder="Is there anyway i can fix this :("
@@ -275,7 +286,7 @@ export default function GrievanceApp() {
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          Fuck You Bitch
+                          Submit Apology
                         </>
                       )}
                     </Button>
