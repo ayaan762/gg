@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongodb"; // from Step 2
-import { Submission } from "@/models/Submission";  // from Step 3
+import { connectToDatabase } from "@/lib/mongodb";
+import { Submission } from "@/models/Submission";
 
 export async function POST(request: Request) {
   try {
@@ -19,10 +19,11 @@ export async function POST(request: Request) {
     await submission.save();
 
     return NextResponse.json({ success: true, message: "Submission saved" }, { status: 201 });
-  } catch (error: any) {
-    console.error("Submission error:", error);
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error("Submission error:", err);
     return NextResponse.json(
-      { success: false, message: error.message || "Database save failed" },
+      { success: false, message: err.message || "Database save failed" },
       { status: 500 }
     );
   }
